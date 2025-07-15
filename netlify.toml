@@ -1,3 +1,5 @@
+# netlify.toml
+
 [build]
   functions = "functions"
 
@@ -5,3 +7,8 @@
   from = "/*"
   to = "/.netlify/functions/redirect"
   status = 200
+
+# <<< أضف هذا القسم >>>
+# هذا يخبر Netlify بتضمين الملف المحدد مع كل الدوال
+[functions."*"]
+  included_files = ["functions/server_url.txt"]
