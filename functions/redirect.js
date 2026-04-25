@@ -51,7 +51,6 @@ exports.handler = async function(event, context) {
   }
 };
 
-// دالة تحتوي على تصميم صفحة الصيانة (Blue Venom Design)
 function getMaintenancePage(message) {
   return `
   <!DOCTYPE html>
@@ -59,106 +58,192 @@ function getMaintenancePage(message) {
   <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>C2BlueVenom | Server Status</title>
+      <title>BlueRever | Server Status</title>
+      <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
       <style>
           :root {
-              --bg-color: #000428;
-              --accent-color: #004e92;
-              --glow-color: #00d4ff;
-              --glass-bg: rgba(255, 255, 255, 0.05);
+              --primary-glow: #3b82f6;
+              --secondary-glow: #8b5cf6;
+              --glass-bg: rgba(17, 25, 40, 0.75);
+              --glass-border: rgba(255, 255, 255, 0.125);
+              --text-main: #ffffff;
+              --text-muted: #94a3b8;
           }
+
+          * { box-sizing: border-box; }
 
           body, html {
-              margin: 0; padding: 0; height: 100%; width: 100%;
-              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-              background: radial-gradient(circle at center, var(--accent-color) 0%, var(--bg-color) 100%);
-              display: flex; align-items: center; justify-content: center;
-              overflow: hidden; color: white;
+              margin: 0; padding: 0; min-height: 100vh;
+              font-family: 'Cairo', sans-serif;
+              background: radial-gradient(circle at 50% 10%, #1e293b 0%, #0f172a 100%), 
+                          url('https://i.giphy.com/077i6AULCXc0FKTj9s.webp');
+              background-size: cover;
+              background-position: center;
+              background-blend-mode: overlay;
+              background-attachment: fixed;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: space-between;
+              color: var(--text-main);
+              overflow-x: hidden;
           }
 
-          /* فقاعات خلفية متحركة */
-          .bubbles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-          .bubble {
-              position: absolute; bottom: -100px; background: rgba(0, 212, 255, 0.1);
-              border-radius: 50%; animation: rise 15s infinite ease-in;
-              box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+          header, footer {
+              padding: 2rem 0;
+              width: 100%;
+              text-align: center;
+              z-index: 10;
           }
 
-          @keyframes rise {
-              0% { bottom: -100px; transform: translateX(0) scale(1); opacity: 0; }
-              20% { opacity: 0.5; }
-              100% { bottom: 110%; transform: translateX(100px) scale(1.5); opacity: 0; }
+          .brand-name {
+              font-size: 2.2rem;
+              font-weight: 800;
+              margin: 0;
+              background: linear-gradient(to right, #fff, #a5b4fc);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+              letter-spacing: 1px;
           }
 
-          /* بطاقة الزجاج (Glassmorphism) */
+          /* بطاقة المحتوى الزجاجية */
           .container {
-              position: relative; z-index: 10;
-              padding: 3rem; background: var(--glass-bg);
-              backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-              border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1);
-              box-shadow: 0 25px 45px rgba(0,0,0,0.5);
-              text-align: center; max-width: 500px; width: 90%;
-              animation: fadeIn 1.5s ease-out;
+              position: relative;
+              z-index: 10;
+              width: 90%;
+              max-width: 500px;
+              padding: 3.5rem 2rem;
+              background: var(--glass-bg);
+              backdrop-filter: blur(16px) saturate(180%);
+              -webkit-backdrop-filter: blur(16px) saturate(180%);
+              border-radius: 28px;
+              border: 1px solid var(--glass-border);
+              box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+              text-align: center;
+              animation: float 6s ease-in-out infinite;
           }
 
-          @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+          @keyframes float {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-15px); }
+          }
 
-          .logo {
-              font-size: 3rem; font-weight: bold; margin-bottom: 1rem;
-              background: linear-gradient(to right, #fff, var(--glow-color));
-              -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-              filter: drop-shadow(0 0 15px var(--glow-color));
-              letter-spacing: 2px;
+          .status-icon-wrapper {
+              position: relative;
+              display: inline-flex;
+              margin-bottom: 2rem;
           }
 
           .status-icon {
-              width: 80px; height: 80px; margin-bottom: 1.5rem;
-              display: inline-block; border-radius: 50%;
-              border: 3px solid var(--glow-color);
-              position: relative; animation: pulse 2s infinite;
+              width: 100px;
+              height: 100px;
+              background: rgba(59, 130, 246, 0.1);
+              border: 2px solid var(--primary-glow);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 2.5rem;
+              color: var(--primary-glow);
+              animation: pulse-glow 2s infinite;
           }
 
-          @keyframes pulse {
-              0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); }
-              70% { box-shadow: 0 0 0 20px rgba(0, 212, 255, 0); }
-              100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+          @keyframes pulse-glow {
+              0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); transform: scale(1); }
+              70% { box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); transform: scale(1.05); }
+              100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); transform: scale(1); }
           }
 
-          .message { font-size: 1.2rem; opacity: 0.9; line-height: 1.6; }
-          .footer { margin-top: 2rem; font-size: 0.8rem; opacity: 0.5; }
+          h1 {
+              font-size: 1.8rem;
+              font-weight: 700;
+              margin-bottom: 1rem;
+              color: #fff;
+          }
 
+          .message {
+              font-size: 1.1rem;
+              color: var(--text-muted);
+              line-height: 1.8;
+              margin-bottom: 2rem;
+          }
+
+          .divider {
+              height: 1px;
+              width: 60px;
+              background: var(--primary-glow);
+              margin: 1.5rem auto;
+              opacity: 0.5;
+          }
+
+          .loader-dots {
+              display: flex;
+              justify-content: center;
+              gap: 8px;
+          }
+
+          .dot {
+              width: 8px;
+              height: 8px;
+              background: var(--primary-glow);
+              border-radius: 50%;
+              animation: dot-pulse 1.5s infinite ease-in-out;
+          }
+
+          .dot:nth-child(2) { animation-delay: 0.2s; }
+          .dot:nth-child(3) { animation-delay: 0.4s; }
+
+          @keyframes dot-pulse {
+              0%, 100% { transform: scale(1); opacity: 0.3; }
+              50% { transform: scale(1.5); opacity: 1; }
+          }
+
+          footer p {
+              color: var(--text-muted);
+              font-size: 0.9rem;
+              letter-spacing: 0.5px;
+          }
+
+          /* تحسينات الموبايل */
+          @media (max-width: 480px) {
+              .container { padding: 2.5rem 1.5rem; }
+              .brand-name { font-size: 1.8rem; }
+              h1 { font-size: 1.5rem; }
+              .message { font-size: 1rem; }
+          }
       </style>
   </head>
   <body>
-      <div class="bubbles" id="bubbles"></div>
+      <header>
+          <div class="brand-name">C2BLUE VENOM</div>
+      </header>
       
-      <div class="container">
-          <div class="logo">C2BLUE VENOM</div>
-          <div class="status-icon" style="display: flex; align-items: center; justify-content: center;">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <main class="container">
+          <div class="status-icon-wrapper">
+              <div class="status-icon">
+                  <i class="fas fa-tools"></i>
+              </div>
           </div>
-          <h1>عذراً، السيرفر متوقف</h1>
+          
+          <h1>عذراً، السيرفر متوقف مؤقتاً</h1>
+          
+          <div class="divider"></div>
+          
           <p class="message">${message}</p>
-          <div class="footer">جاري مراقبة النظام تلقائياً.. يرجى المحاولة لاحقاً.</div>
-      </div>
+          
+          <div class="loader-dots">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+          </div>
+      </main>
 
-      <script>
-          function createBubbles() {
-              const container = document.getElementById('bubbles');
-              for (let i = 0; i < 20; i++) {
-                  const bubble = document.createElement('div');
-                  bubble.className = 'bubble';
-                  const size = Math.random() * 60 + 10 + 'px';
-                  bubble.style.width = size;
-                  bubble.style.height = size;
-                  bubble.style.left = Math.random() * 100 + '%';
-                  bubble.style.animationDuration = Math.random() * 10 + 5 + 's';
-                  bubble.style.animationDelay = Math.random() * 5 + 's';
-                  container.appendChild(bubble);
-              }
-          }
-          createBubbles();
-      </script>
+      <footer>
+          <p>جاري مراقبة النظام تلقائياً.. يرجى المحاولة لاحقاً</p>
+          <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.5;">© 2024 C2BlueVenom Intelligence</p>
+      </footer>
   </body>
   </html>
   `;
