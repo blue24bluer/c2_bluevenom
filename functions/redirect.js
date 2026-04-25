@@ -217,7 +217,7 @@ function getMaintenancePage(message) {
   </head>
   <body>
       <header>
-          <div class="brand-name">C2BLUE VENOM</div>
+          <div class="brand-name">BlueRever</div>
       </header>
       
       <main class="container">
