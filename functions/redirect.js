@@ -98,7 +98,7 @@ function getMaintenancePage(title, message, icon) {
           <div><span class="dot"></span> <span class="dot" style="animation-delay:0.2s"></span> <span class="dot" style="animation-delay:0.4s"></span></div>
       </main>
       <footer>
-          <p style="color:var(--text-muted); font-size:0.8rem;">© 2024 C2BlueVenom Intelligence</p>
+          <p style="color:var(--text-muted); font-size:0.8rem;">©BlueRever by @blue24bluer 2024 - 2026</p>
       </footer>
   </body>
   </html>`;
